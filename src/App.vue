@@ -1,15 +1,30 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
+  <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+  
+  
+  <!-- <Suspense timeout="0">
+    <fallback-test/>
+  </Suspense> -->
+
+  <play-ground/>
+  
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+// import HelloWorld from './components/HelloWorld.vue'
+// import fallbackTest from './components/fallback-test.vue'
+import playGround from './components/playground.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    // HelloWorld,
+    // fallbackTest,
+    playGround
+  },
+  setup(){
+    return null
   }
 }
 </script>
