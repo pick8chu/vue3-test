@@ -35,10 +35,14 @@
         <br/>
         <span>not ref: {{computedForNotRef}}</span>
     </div>
+    <div>
+        <button @click="sendKakaopay"> send Kakaopay</button>
+    </div>
 </template>
 
 <script>
 import {computed, ref, watch} from 'vue'
+import axios from 'axios'
 
 export default {
     name: 'PlayGround',
@@ -73,12 +77,23 @@ export default {
             return `"${notRef}" is the value of input data`
         })
 
+        /* kakaopay */
+
+        const sendKakaopay = () => {
+            axios.post('http://localhost:3000/kakaopay', null, null)
+            .then((res) => {
+                // window.alert(res.data)
+                window.open(res.data, "_blank", "width=500,height=600")
+            })
+        }
+
         return {
             inputData,
             notRef,
             changeValue,
             computedForInputData,
-            computedForNotRef
+            computedForNotRef,
+            sendKakaopay
         }
     }
 }
