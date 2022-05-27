@@ -4,7 +4,13 @@
         <input v-model="partner_order_id">
     </div>
     <div>
-        <button @click="openKakaopay">window open popup link (kakaopay)</button>
+        <button @click="testKakaopaySingle">kakaopay single</button>
+    </div>
+    <div>
+        <button @click="registerSubscription">register subscription</button>
+    </div>
+    <div>
+        <button @click="testKakaopaySubscription">make subscription payment</button>
     </div>
 </template>
 
@@ -41,29 +47,75 @@ export default {
 
         const partner_order_id = ref(getRandomNumber())
 
-        const openKakaopay = async () => {
+        const openKakaopay = async (obj) => {
 
-            let redirectUrl = await axios.post(`${baseURL}/api/v1/common/kakaopay`, {
-                    cid: "TC0ONETIME",
-                    partner_order_id: partner_order_id.value,
-                    partner_user_id: "partner_user_id",
-                    item_name: "test item name",
-                    quantity: "100",
-                    total_amount: "22000",
-                    vat_amount: "10",
-                    tax_free_amount: "10",
-                }).then(res => res.data)
+            let redirectUrl = await axios.post(`${baseURL}/api/v1/common/kakaopay${obj.uri}`, obj.param)
+                .then(res => res.data)
 
             partner_order_id.value = getRandomNumber()  // random string generate
             window.open(redirectUrl, "_blank", "width=500,height=700;")
         }
+
+        const testKakaopaySingle = () => {
+            openKakaopay({
+                uri: "",
+                param: {
+                        cid: "TC0ONETIME",
+                        partner_order_id: partner_order_id.value,
+                        partner_user_id: "partner_user_id",
+                        item_name: "test item name",
+                        quantity: "100",
+                        total_amount: "22000",
+                        vat_amount: "10",
+                        tax_free_amount: "10",
+                    }
+                })
+        }
+
+        
+        const registerSubscription = () => {
+            openKakaopay({
+                uri: "",
+                param: {
+                        cid: "TCSUBSCRIP",
+                        partner_order_id: partner_order_id.value,
+                        partner_user_id: "partner_user_id",
+                        item_name: "정기결제 테스트",
+                        quantity: "0",
+                        total_amount: "0",
+                        tax_free_amount: "0",
+                    }
+                })
+        }
+
+        const testKakaopaySubscription = async () => {
+            const res = await axios.post(`${baseURL}/api/v1/common/kakaopay/subscription`, {
+                uri: "/subscription",
+                param: {
+                    cid: "TCSUBSCRIP",
+                    sid : "S2903a8b1d7a790fc786",
+                    partner_order_id: partner_order_id.value,
+                    // SID를 발급 받은 첫 결제의 결제 준비 API로 전달한 값과 일치해야 함
+                    partner_user_id: "partner_user_id",
+                    item_name: "정기결제 테스트",
+                    quantity: "10",
+                    total_amount: "100000",
+                    tax_free_amount: "10000",
+                }
+            }).then(res => res.data)
+
+            console.log(res)
+            alert(res)
+        } 
 
         const callbackFn = () => {
             alert("kakaopay 결제 완료")
         }
 
         return {
-            openKakaopay,
+            testKakaopaySingle,
+            registerSubscription,
+            testKakaopaySubscription,
             callbackFn,
             partner_order_id,
         }
