@@ -25,8 +25,8 @@ export default {
 
         onMounted(() => {
             window.addEventListener("message", (e) => {
-                if(e.origin == `${baseURL}` && e.data == 'callbackFn'){
-                    callbackFn();
+                if(e.origin == `${baseURL}`){
+                    callbackFn(e.data);
                 }
                 console.log(e)
             }, false)
@@ -90,26 +90,25 @@ export default {
 
         const testKakaopaySubscription = async () => {
             const res = await axios.post(`${baseURL}/api/v1/common/kakaopay/subscription`, {
-                uri: "/subscription",
-                param: {
-                    cid: "TCSUBSCRIP",
-                    sid : "S2903a8b1d7a790fc786",
-                    partner_order_id: partner_order_id.value,
-                    // SID를 발급 받은 첫 결제의 결제 준비 API로 전달한 값과 일치해야 함
-                    partner_user_id: "partner_user_id",
-                    item_name: "정기결제 테스트",
-                    quantity: "10",
-                    total_amount: "100000",
-                    tax_free_amount: "10000",
-                }
+                cid: "TCSUBSCRIP",
+                sid : "S295de9b1d7a790fe1e1",
+                partner_order_id: partner_order_id.value,
+                // SID를 발급 받은 첫 결제의 결제 준비 API로 전달한 값과 일치해야 함
+                partner_user_id: "partner_user_id",
+                item_name: "정기결제 테스트",
+                quantity: "10",
+                total_amount: "100000",
+                tax_free_amount: "10000",
             }).then(res => res.data)
 
             console.log(res)
             alert(res)
         } 
 
-        const callbackFn = () => {
-            alert("kakaopay 결제 완료")
+        const callbackFn = (res) => {
+            debugger
+            console.log(res)
+            alert(res)
         }
 
         return {
