@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { onMounted, onUnmounted } from 'vue'
 // import HelloWorld from './components/HelloWorld.vue'
 // import fallbackTest from './components/fallbackTest.vue'
 // import playGround from './components/playground.vue'
@@ -28,6 +29,28 @@ export default {
     windowPopupTest
   },
   setup(){
+    
+    const baseURL = "http://localhost:8080"
+    onMounted(() => {
+        window.addEventListener("message", (e) => {
+            if(e.origin == `${baseURL}` && e.data.parentId == 'parentId'){
+                callbackFn(e.data);
+            }
+            console.log(e)
+        }, false)
+    })
+
+    onUnmounted(() => {
+        window.removeEventListener("message")
+    })
+
+    
+    const callbackFn = (res) => {
+        // debugger
+        console.log("callbackFn called", res)
+        alert(res)
+    }
+
     return null
   }
 }

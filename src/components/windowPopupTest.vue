@@ -16,25 +16,25 @@
 
 <script>
 import axios from 'axios'
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
 
 export default {
     setup(){
 
         /* ------------------ vue cycle hook --------------------*/
 
-        onMounted(() => {
-            window.addEventListener("message", (e) => {
-                if(e.origin == `${baseURL}`){
-                    callbackFn(e.data);
-                }
-                console.log(e)
-            }, false)
-        })
+        // onMounted(() => {
+        //     window.addEventListener("message", (e) => {
+        //         if(e.origin == `${baseURL}`){
+        //             callbackFn(e.data);
+        //         }
+        //         console.log(e)
+        //     }, false)
+        // })
 
-        onUnmounted(() => {
-            window.removeEventListener("message")
-        })
+        // onUnmounted(() => {
+        //     window.removeEventListener("message")
+        // })
 
         /* ----------------------------------------------------- */
 
@@ -58,11 +58,13 @@ export default {
 
         const testKakaopaySingle = () => {
             openKakaopay({
-                uri: "",
+                uri: "/payments",
                 param: {
-                        cid: "TC0ONETIME",
-                        partner_order_id: partner_order_id.value,
-                        partner_user_id: "partner_user_id",
+                        // cid: "TC0ONETIME",
+                        // partner_order_id: partner_order_id.value,
+                        // partner_user_id: "partner_user_id",
+                        parent_id: 'parentId',
+                        subscription: false,
                         item_name: "test item name",
                         quantity: "100",
                         total_amount: "22000",
@@ -75,11 +77,12 @@ export default {
         
         const registerSubscription = () => {
             openKakaopay({
-                uri: "",
+                uri: "/payments",
                 param: {
-                        cid: "TCSUBSCRIP",
-                        partner_order_id: partner_order_id.value,
-                        partner_user_id: "partner_user_id",
+
+                        parent_id: 'parentId',
+                        subscription: true,
+                        
                         item_name: "정기결제 테스트",
                         quantity: "0",
                         total_amount: "0",
@@ -89,12 +92,12 @@ export default {
         }
 
         const testKakaopaySubscription = async () => {
-            const res = await axios.post(`${baseURL}/api/v1/common/kakaopay/subscription`, {
-                cid: "TCSUBSCRIP",
-                sid : "S295de9b1d7a790fe1e1",
+            const res = await axios.post(`${baseURL}/api/v1/common/kakaopay/subscriptions`, {
+                // cid: "TCSUBSCRIP",
+                sid : "S29969ff652005080c8e",
                 partner_order_id: partner_order_id.value,
                 // SID를 발급 받은 첫 결제의 결제 준비 API로 전달한 값과 일치해야 함
-                partner_user_id: "partner_user_id",
+                partner_user_id: "partnerUserId",
                 item_name: "정기결제 테스트",
                 quantity: "10",
                 total_amount: "100000",
@@ -105,17 +108,10 @@ export default {
             alert(res)
         } 
 
-        const callbackFn = (res) => {
-            debugger
-            console.log(res)
-            alert(res)
-        }
-
         return {
             testKakaopaySingle,
             registerSubscription,
             testKakaopaySubscription,
-            callbackFn,
             partner_order_id,
         }
     }
